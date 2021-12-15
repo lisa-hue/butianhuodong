@@ -27,18 +27,18 @@ jobs:
         sudo apt-get install libpcap-dev -y
     - name: Install dependencies
       run: |
-        sudo python -m pip install --upgrade pip
+        python -m pip install --upgrade pip
     - name: install glass
       run: |
         git clone https://github.com/s7ckTeam/Glass.git
         cd ./Glass
-        sudo python -m pip install -r requirements.txt
-        curl -O https://raw.githubusercontent.com/lisa-hue/butianhuodong/main/butianhuodongdomain.txt  
+        python -m pip install -r requirements.txt
+        curl -O https://raw.githubusercontent.com/lisa-hue/butianhuodong/main/result.txt  
 
     - name: glass run
       run: |
         cd ./Glass
-        sudo python Glass.py -w butianhuodongdomain.txt
+        python Glass.py -w result.txt
         
     - name: save_result
       uses: actions/upload-artifact@v1
