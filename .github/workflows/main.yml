@@ -33,12 +33,12 @@ jobs:
         git clone https://github.com/s7ckTeam/Glass.git
         cd ./Glass
         python -m pip install -r requirements.txt
-        curl -O https://raw.githubusercontent.com/lisa-hue/butianhuodong/main/result.txt  
+        curl -O https://raw.githubusercontent.com/lisa-hue/butianhuodong/main/butianhuodongdomain.txt  
 
     - name: glass run
       run: |
         cd ./Glass
-        python Glass.py -w result.txt
+        python Glass.py -w butianhuodongdomain.txt
         
     - name: save_result
       uses: actions/upload-artifact@v1
