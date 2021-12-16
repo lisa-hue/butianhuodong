@@ -28,9 +28,10 @@ def getinfo(filepath):
     return ips
 
 def saveinfo():
-    with open('result.txt','a') as w:
+    with open('vul_result.txt','a') as w:
         for url in vul_list:
             w.write(url+'\n')
+
             
 async def sbcheck(sem,url):
   global num
@@ -52,7 +53,7 @@ async def sbcheck(sem,url):
                             if res.status == 200:
                                 print("目标站点开启了 jolokia 端点的未授权访问,路径为：{}".format(url_tar2))
                                 #saveinfo(url)
-                                vul_list.append(url)
+                                vul_list.append(url_tar)
                     else:
                         url_tar = url + '/env'
                         async with session.get(url_tar,timeout=timeout) as resp:
@@ -64,7 +65,7 @@ async def sbcheck(sem,url):
                                         if res.status == 200:
                                             print("目标站点开启了 jolokia 端点的未授权访问,路径为：{}".format(url_tar2))
                                             #saveinfo(url)
-                                            vul_list.append(url)
+                                            vul_list.append(url_tar)
                 else:
                     url_tar = url + '/env'
                     async with session.get(url_tar,timeout=timeout) as resp:
@@ -76,7 +77,7 @@ async def sbcheck(sem,url):
                                     if res.status == 200:
                                         print("目标站点开启了 jolokia 端点的未授权访问,路径为：{}".format(url_tar2))
                                         #saveinfo(url)
-                                        vul_list.append(url)
+                                        vul_list.append(url_tar)
         except Exception as e:
             print(e)
 
