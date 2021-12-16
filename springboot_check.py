@@ -138,7 +138,7 @@ def cidrscan(cidr):
 
 
 def poolmana(ips):
-    p = Pool(20)
+    p = Pool(100)
     q = Manager().Queue()
     for i in ips:
         i=i.replace('\n','')
