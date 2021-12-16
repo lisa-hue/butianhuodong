@@ -13,8 +13,8 @@ import time
 
 timeout = aiohttp.ClientTimeout(total=10)
 #信号量
-sem_num = 50
-
+sem_num = 100
+vul_list = []
 
 
 
@@ -28,12 +28,11 @@ def getinfo(filepath):
     fr.close()
     return ips
 
-def saveinfo(result):
-    if result:
-        fw=open('result.txt','a')
-        fw.write(result+'\n')
-        fw.close()
-
+def saveinfo():
+    with open('result.txt','a') as w:
+        for url in vul_list:
+            w.write(url+'\n')
+            
 async def sbcheck(sem,url):
   conn=aiohttp.TCPConnector(verify_ssl=False)
   async with sem:
@@ -51,7 +50,8 @@ async def sbcheck(sem,url):
                         async with session.get(url_tar2,timeout=timeout) as res:
                             if res.status == 200:
                                 print("目标站点开启了 jolokia 端点的未授权访问,路径为：{}".format(url_tar2))
-                                saveinfo(url)
+                                #saveinfo(url)
+                                vul_list.append(url)
                 else:
                     url_tar = url + '/env'
                     async with session.get(url_tar,timeout=timeout) as resp:
@@ -62,7 +62,8 @@ async def sbcheck(sem,url):
                                 async with session.get(url_tar2,timeout=timeout) as res:
                                     if res.status == 200:
                                         print("目标站点开启了 jolokia 端点的未授权访问,路径为：{}".format(url_tar2))
-                                        saveinfo(url)
+                                        #saveinfo(url)
+                                        vul_list.append(url)
 
         except Exception as e:
             print(e)
@@ -96,4 +97,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     run(args.file)
+    print("开始写入")
+    saveinfo()
     print("程序运行结束，查收result.txt")
