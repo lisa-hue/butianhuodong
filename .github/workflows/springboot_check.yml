@@ -36,7 +36,7 @@ jobs:
 
     - name: springbootcheck run
       run: |
-        python springboot_check.py -f springboot_check.txt
+        python springboot_check.py -f springbootcheck.txt
         
     - name: save_result
       uses: actions/upload-artifact@v1
