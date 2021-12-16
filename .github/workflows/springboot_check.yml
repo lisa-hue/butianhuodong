@@ -32,7 +32,7 @@ jobs:
       run: |
         curl -O https://raw.githubusercontent.com/lisa-hue/butianhuodong/main/springboot_check.py
         python -m pip install aiohttp
-        curl -O https://raw.githubusercontent.com/lisa-hue/butianhuodong/main/springboot_check.txt
+        curl -O https://raw.githubusercontent.com/lisa-hue/butianhuodong/main/springbootcheck.txt
 
     - name: springbootcheck run
       run: |
