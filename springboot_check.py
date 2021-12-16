@@ -11,12 +11,11 @@ import re
 import time
 
 
-timeout = aiohttp.ClientTimeout(total=10)
+timeout = aiohttp.ClientTimeout(total=5)
 #信号量
 sem_num = 100
 vul_list = []
-
-
+num = 0
 
 headers = {"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0) Gecko/20100101 Firefox/69.0",
            "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",}
@@ -34,17 +33,19 @@ def saveinfo():
             w.write(url+'\n')
             
 async def sbcheck(sem,url):
+  global num
   conn=aiohttp.TCPConnector(verify_ssl=False)
   async with sem:
       async with aiohttp.ClientSession(connector=conn) as session:
         try:
-            print('>>>>> {}'.format(url))
+            num = num + 1
+            print('>> {}'.format(num))
             url_tar = url + '/actuator/env'
             async with session.get(url_tar,timeout=timeout) as resp:
                 status = resp.status
                 text = await resp.text()
                 if status == 200:
-                    if "******" in text:
+                    if 'password":"******"' in text:
                         #检测jolokia
                         url_tar2 = url + '/actuator/jolokia'
                         async with session.get(url_tar2,timeout=timeout) as res:
@@ -52,19 +53,30 @@ async def sbcheck(sem,url):
                                 print("目标站点开启了 jolokia 端点的未授权访问,路径为：{}".format(url_tar2))
                                 #saveinfo(url)
                                 vul_list.append(url)
+                    else:
+                        url_tar = url + '/env'
+                        async with session.get(url_tar,timeout=timeout) as resp:
+                            if resp.status == 200:
+                                text = await resp.text()
+                                if 'password":"******"' in text:
+                                    url_tar2 = url + '/jolokia'
+                                    async with session.get(url_tar2,timeout=timeout) as res:
+                                        if res.status == 200:
+                                            print("目标站点开启了 jolokia 端点的未授权访问,路径为：{}".format(url_tar2))
+                                            #saveinfo(url)
+                                            vul_list.append(url)
                 else:
                     url_tar = url + '/env'
                     async with session.get(url_tar,timeout=timeout) as resp:
                         if resp.status == 200:
                             text = await resp.text()
-                            if "******" in text:
+                            if 'password":"******"' in text:
                                 url_tar2 = url + '/jolokia'
                                 async with session.get(url_tar2,timeout=timeout) as res:
                                     if res.status == 200:
                                         print("目标站点开启了 jolokia 端点的未授权访问,路径为：{}".format(url_tar2))
                                         #saveinfo(url)
                                         vul_list.append(url)
-
         except Exception as e:
             print(e)
 
@@ -80,7 +92,7 @@ def poolmana(ips):
         http_tasks.append(task)
         
     loop_http.run_until_complete(asyncio.wait(http_tasks))
-    loop_http.close()
+    #loop_http.close()
 
 def run(filepath):
     ips=getinfo(filepath)
@@ -97,6 +109,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     run(args.file)
+    print("总数"+str(len(vul_list)))
     print("开始写入")
     saveinfo()
     print("程序运行结束，查收result.txt")
