@@ -45,7 +45,7 @@ async def laravelCheck(sem,url):
                 status = resp.status
                 text = await resp.text()
                 if status == 200:
-                    if "APP_NAME" in response.text and "DB_HOST" in response.text:
+                    if "APP_NAME" in text and "DB_HOST" in text:
                         print("目标存在漏洞,路径为：{}".format(vuln_url))
                         vul_list.append(vuln_url)
         except Exception as e:
