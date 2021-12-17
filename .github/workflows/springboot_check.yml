@@ -32,14 +32,14 @@ jobs:
       run: |
         curl -O https://raw.githubusercontent.com/lisa-hue/butianhuodong/main/springboot_check.py
         python -m pip install aiohttp
-        curl -O https://raw.githubusercontent.com/lisa-hue/butianhuodong/main/springbootcheck.txt
+        curl -O https://raw.githubusercontent.com/lisa-hue/butianhuodong/main/springbootcheck2.txt
 
     - name: springbootcheck run
       run: |
-        python springboot_check.py -f springbootcheck.txt
+        python springboot_check.py -f springbootcheck2.txt
         
     - name: save_result
       uses: actions/upload-artifact@v1
       with:
           name: result
-          path: /home/runner/work/butianhuodong/butianhuodong/
+          path: /home/runner/work/butianhuodong/butianhuodong/result.txt
