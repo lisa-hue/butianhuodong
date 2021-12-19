@@ -4,12 +4,9 @@ from urllib.parse import quote
 import json
 import math
 from termcolor import cprint
+import time
 
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:46.0) Gecko/20100101 Firefox/46.0'}
-proxies={
-'http':'http://127.0.0.1:8080',
-'https':'https://127.0.0.1:8080'
-}
 
 total_list = []
 companyName_list = []
@@ -109,7 +106,7 @@ def chinazApi(domain):
     # for _ in chinazNewDomains:
     #     print(_)
     if len(chinazNewDomains) > 0:
-        with open('laravel_result.txt','a+',encoding="utf-8",errors="ignore") as w:
+        with open('result.txt','a+',encoding="utf-8",errors="ignore") as w:
             for newdomain in chinazNewDomains:
                 if check_contain_chinese(newdomain[1]):
                     continue
@@ -123,5 +120,6 @@ with open('1.txt','rt',encoding="utf-8",errors="ignore") as f:
         num += 1
         print("<><><><><><><><><>第"+str(num)+"页"+"<><><><><><><><><>")
         chinazApi(domain.strip())
+        time.sleep(5)
 
 print("end 排除了这么多家"+str(len(companyName_list)))
